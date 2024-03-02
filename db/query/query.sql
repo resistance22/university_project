@@ -7,5 +7,6 @@ INSERT INTO app_user (
   first_name,   
   last_name,
   email,
-  password, 
-  ) VALUES ( $1, $2, $3, $4 ) RETURNING *;
+  password,
+  role 
+  ) VALUES ( $1, $2, $3, $4, $5 ) RETURNING *;

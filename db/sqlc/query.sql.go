@@ -9,8 +9,47 @@ import (
 	"context"
 )
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO app_user (
+  first_name,   
+  last_name,
+  email,
+  password,
+  role 
+  ) VALUES ( $1, $2, $3, $4, $5 ) RETURNING id, email, password, created_at, first_name, last_name, role
+`
+
+type CreateUserParams struct {
+	FirstName string       `json:"first_name"`
+	LastName  string       `json:"last_name"`
+	Email     string       `json:"email"`
+	Password  string       `json:"password"`
+	Role      AppUserRoles `json:"role"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (AppUser, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.FirstName,
+		arg.LastName,
+		arg.Email,
+		arg.Password,
+		arg.Role,
+	)
+	var i AppUser
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+		&i.FirstName,
+		&i.LastName,
+		&i.Role,
+	)
+	return i, err
+}
+
 const getUser = `-- name: GetUser :one
-SELECT id, email, password, created_at, first_name, last_name FROM app_user
+SELECT id, email, password, created_at, first_name, last_name, role FROM app_user
 WHERE id = $1 LIMIT 1
 `
 
@@ -24,6 +63,7 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (AppUser, error) {
 		&i.CreatedAt,
 		&i.FirstName,
 		&i.LastName,
+		&i.Role,
 	)
 	return i, err
 }

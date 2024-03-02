@@ -5,8 +5,56 @@
 package db
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+type AppUserRoles string
+
+const (
+	AppUserRolesAdmin            AppUserRoles = "admin"
+	AppUserRolesOwner            AppUserRoles = "owner"
+	AppUserRolesSalesManager     AppUserRoles = "sales_manager"
+	AppUserRolesWarehouseManager AppUserRoles = "warehouse_manager"
+	AppUserRolesSalesAgent       AppUserRoles = "sales_agent"
+)
+
+func (e *AppUserRoles) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = AppUserRoles(s)
+	case string:
+		*e = AppUserRoles(s)
+	default:
+		return fmt.Errorf("unsupported scan type for AppUserRoles: %T", src)
+	}
+	return nil
+}
+
+type NullAppUserRoles struct {
+	AppUserRoles AppUserRoles `json:"app_user_roles"`
+	Valid        bool         `json:"valid"` // Valid is true if AppUserRoles is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullAppUserRoles) Scan(value interface{}) error {
+	if value == nil {
+		ns.AppUserRoles, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.AppUserRoles.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullAppUserRoles) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.AppUserRoles), nil
+}
 
 type AppUser struct {
 	ID        int32              `json:"id"`
@@ -15,6 +63,7 @@ type AppUser struct {
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 	FirstName string             `json:"first_name"`
 	LastName  string             `json:"last_name"`
+	Role      AppUserRoles       `json:"role"`
 }
 
 type File struct {
