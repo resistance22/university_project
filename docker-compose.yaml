@@ -1,8 +1,8 @@
 version: "3.9"
-   
+
 services:
   db:
-    image: 142.132.177.67:8082/postgres
+    image: docker.arvancloud.ir/postgres
     container_name: project_db
     volumes:
       - ./_data/db:/var/lib/postgresql/data

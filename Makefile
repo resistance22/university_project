@@ -16,5 +16,7 @@ migratedownone:
 	migrate -path db/migration -database "postgresql://postgres:postgres@localhost:5432/project_database?sslmode=disable" -verbose down 1
 sqlc:
 	sqlc generate
+test:
+	go test ./...
 	
 .PHONY: postgres createdb dropdb migrateup migratedown

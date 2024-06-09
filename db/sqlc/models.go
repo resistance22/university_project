@@ -45,7 +45,7 @@ type Employee struct {
 	FatherName     string           `json:"father_name"`
 }
 
-type OtherPurchase struct {
+type OtherPurchse struct {
 	Title int32 `json:"title"`
 }
 
