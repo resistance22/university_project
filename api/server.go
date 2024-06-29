@@ -1,33 +1,34 @@
-package server
+package api
 
 import (
-	"context"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/resistance22/micorsales/db/sqlc"
 )
 
 type Server struct {
-	router    *gin.Engine
-	DbContext context.Context
-	queries   *db.Queries
+	store  *db.Store
+	router *gin.Engine
 }
 
-func NewServer(dbContext context.Context, queries *db.Queries) *Server {
-	server := &Server{}
+func NewServer(store *db.Store) *Server {
 	router := gin.Default()
-	router.GET("/ping", server.ping)
-	router.POST("/register", server.CreateUser)
-	server.router = router
-	server.DbContext = dbContext
-	server.queries = queries
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"result": "pong",
+		})
+	})
+
+	server := &Server{
+		store:  store,
+		router: router,
+	}
+
 	return server
 }
 
-func (server *Server) Start(address string) {
-	server.router.Run(address)
-}
-
-func (s *Server) errorResponse(err error) gin.H {
-	return gin.H{"error": err.Error()}
+func (server *Server) Start(address string) error {
+	return server.router.Run(address)
 }
