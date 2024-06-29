@@ -1,4 +1,4 @@
-module github.com/resistance22/micorsales
+module github.com/resistance22/university_project
 
 go 1.18
 

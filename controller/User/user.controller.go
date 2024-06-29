@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
-	db "github.com/resistance22/micorsales/db/sqlc"
+	db "github.com/resistance22/university_project/db/sqlc"
 	"golang.org/x/crypto/bcrypt"
 )
 

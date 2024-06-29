@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/resistance22/micorsales/api"
-	db "github.com/resistance22/micorsales/db/sqlc"
+	"github.com/resistance22/university_project/api"
+	db "github.com/resistance22/university_project/db/sqlc"
 )
 
 func main() {

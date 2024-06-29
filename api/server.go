@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/resistance22/micorsales/db/sqlc"
+	db "github.com/resistance22/university_project/db/sqlc"
 )
 
 type Server struct {
