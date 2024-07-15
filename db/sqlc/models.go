@@ -8,8 +8,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AppUser struct {
+	ID        pgtype.UUID `json:"id"`
+	CreatedAt pgtype.Date `json:"created_at"`
+	FirstName pgtype.Text `json:"first_name"`
+	LastName  pgtype.Text `json:"last_name"`
+	UserName  pgtype.Text `json:"user_name"`
+	Password  pgtype.Text `json:"password"`
+}
+
 type Consumable struct {
-	ID        int32            `json:"id"`
+	ID        pgtype.UUID      `json:"id"`
 	CreatedAt pgtype.Timestamp `json:"createdAt"`
 	Title     string           `json:"title"`
 	Uom       string           `json:"uom"`
@@ -17,19 +26,19 @@ type Consumable struct {
 }
 
 type ConsumablePurchase struct {
-	PurchaseID int32   `json:"purchase_id"`
-	Consumable int32   `json:"consumable"`
-	Amount     float64 `json:"amount"`
+	PurchaseID pgtype.UUID `json:"purchase_id"`
+	Consumable pgtype.UUID `json:"consumable"`
+	Amount     float64     `json:"amount"`
 }
 
 type ConsumptionReport struct {
-	ID         int32       `json:"id"`
+	ID         pgtype.UUID `json:"id"`
 	Date       pgtype.Date `json:"date"`
-	Consumable int32       `json:"consumable"`
+	Consumable pgtype.UUID `json:"consumable"`
 }
 
 type Customer struct {
-	ID          int32       `json:"id"`
+	ID          pgtype.UUID `json:"id"`
 	FirstName   string      `json:"first_name"`
 	LastName    string      `json:"last_name"`
 	PhoneNumber string      `json:"phone_number"`
@@ -37,7 +46,7 @@ type Customer struct {
 }
 
 type Employee struct {
-	ID             int32            `json:"id"`
+	ID             pgtype.UUID      `json:"id"`
 	CreatedAt      pgtype.Timestamp `json:"createdAt"`
 	StartedWorking pgtype.Timestamp `json:"startedWorking"`
 	FirstName      string           `json:"first_name"`
@@ -45,47 +54,47 @@ type Employee struct {
 	FatherName     string           `json:"father_name"`
 }
 
-type OtherPurchse struct {
-	Title int32 `json:"title"`
+type OtherPurchase struct {
+	Title pgtype.UUID `json:"title"`
 }
 
 type Payment struct {
-	ID       int32       `json:"id"`
+	ID       pgtype.UUID `json:"id"`
 	Date     pgtype.Date `json:"date"`
 	Amount   float64     `json:"amount"`
-	Employee int32       `json:"employee"`
+	Employee pgtype.UUID `json:"employee"`
 }
 
 type ProductionReport struct {
-	ID     int32       `json:"id"`
+	ID     pgtype.UUID `json:"id"`
 	Date   pgtype.Date `json:"date"`
 	Amount float64     `json:"amount"`
 }
 
 type Purchase struct {
-	ID    int32   `json:"id"`
-	Price float64 `json:"price"`
+	ID    pgtype.UUID `json:"id"`
+	Price float64     `json:"price"`
 }
 
 type Sale struct {
-	ID              int32       `json:"id"`
+	ID              pgtype.UUID `json:"id"`
 	Date            pgtype.Date `json:"date"`
-	Customer        int32       `json:"customer"`
-	Sort            pgtype.Int4 `json:"sort"`
+	Customer        pgtype.UUID `json:"customer"`
+	Sort            pgtype.UUID `json:"sort"`
 	UnitPrice       float64     `json:"unit_price"`
 	Amount          float64     `json:"amount"`
 	DiscountPerUnit float64     `json:"discount_per_unit"`
 }
 
 type Sort struct {
-	ID        int32   `json:"id"`
-	Code      string  `json:"code"`
-	Remaining float64 `json:"remaining"`
+	ID        pgtype.UUID `json:"id"`
+	Code      string      `json:"code"`
+	Remaining float64     `json:"remaining"`
 }
 
 type SortReport struct {
-	ID     int32       `json:"id"`
+	ID     pgtype.UUID `json:"id"`
 	Date   pgtype.Date `json:"date"`
 	Amount float64     `json:"amount"`
-	Sort   int32       `json:"sort"`
+	Sort   pgtype.UUID `json:"sort"`
 }

@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/jackc/pgx/v5"
-	server "github.com/resistance22/micorsales/api"
-	db "github.com/resistance22/micorsales/db/sqlc"
+	"github.com/resistance22/university_project/api"
+	db "github.com/resistance22/university_project/db/sqlc"
 )
 
 func main() {
@@ -17,8 +18,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-	defer conn.Close(dbContext)
-	queries := db.New(conn)
-	apiServer := server.NewServer(dbContext, queries)
-	apiServer.Start("0.0.0.0:3000")
+	// defer conn.Close(dbContext)
+	store := db.NewPGXStore(conn)
+	server := api.NewServer(store)
+	if err := server.Start("0.0.0.0:4321"); err != nil {
+		log.Fatal(err)
+	}
 }

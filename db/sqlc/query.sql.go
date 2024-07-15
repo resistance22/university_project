@@ -13,6 +13,7 @@ import (
 
 const createConsumable = `-- name: CreateConsumable :one
 INSERT INTO consumable (
+  id,
   "createdAt",
   title,
   uom,
@@ -21,11 +22,13 @@ INSERT INTO consumable (
   $1,
   $2,
   $3,
-  $4
+  $4,
+  $5
 ) RETURNING id, "createdAt", title, uom, remaining
 `
 
 type CreateConsumableParams struct {
+	ID        pgtype.UUID      `json:"id"`
 	CreatedAt pgtype.Timestamp `json:"createdAt"`
 	Title     string           `json:"title"`
 	Uom       string           `json:"uom"`
@@ -34,6 +37,7 @@ type CreateConsumableParams struct {
 
 func (q *Queries) CreateConsumable(ctx context.Context, arg CreateConsumableParams) (Consumable, error) {
 	row := q.db.QueryRow(ctx, createConsumable,
+		arg.ID,
 		arg.CreatedAt,
 		arg.Title,
 		arg.Uom,
@@ -46,6 +50,54 @@ func (q *Queries) CreateConsumable(ctx context.Context, arg CreateConsumablePara
 		&i.Title,
 		&i.Uom,
 		&i.Remaining,
+	)
+	return i, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO app_user (
+  id,
+  created_at,
+  first_name,
+  last_name,
+  user_name,
+  password
+) VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  $6
+) RETURNING id, created_at, first_name, last_name, user_name, password
+`
+
+type CreateUserParams struct {
+	ID        pgtype.UUID `json:"id"`
+	CreatedAt pgtype.Date `json:"created_at"`
+	FirstName pgtype.Text `json:"first_name"`
+	LastName  pgtype.Text `json:"last_name"`
+	UserName  pgtype.Text `json:"user_name"`
+	Password  pgtype.Text `json:"password"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (AppUser, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.CreatedAt,
+		arg.FirstName,
+		arg.LastName,
+		arg.UserName,
+		arg.Password,
+	)
+	var i AppUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.FirstName,
+		&i.LastName,
+		&i.UserName,
+		&i.Password,
 	)
 	return i, err
 }
