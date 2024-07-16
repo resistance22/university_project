@@ -8,17 +8,15 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	FirstName string
-	LastName  string
-	UserName  string
-	Password  string
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	UserName  string    `json:"user_name"`
+	Password  string    `json:"password"`
 }
 
 func NewUser(
-	ID uuid.UUID,
-	CreatedAt time.Time,
 	FirstName string,
 	LastName string,
 	UserName string,
@@ -31,8 +29,8 @@ func NewUser(
 	}
 
 	return &User{
-		ID,
-		CreatedAt,
+		uuid.New(),
+		time.Now().UTC(),
 		FirstName,
 		LastName,
 		UserName,

@@ -46,3 +46,9 @@ func (repo *UserRepository) Register(ctx context.Context, user *entity.User) err
 	_, err := repo.store.Queries.CreateUser(ctx, *params)
 	return err
 }
+
+func NewUserRepository(store *db.Store) *UserRepository {
+	return &UserRepository{
+		store: store,
+	}
+}

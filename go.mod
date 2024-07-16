@@ -10,7 +10,10 @@ require (
 	golang.org/x/crypto v0.22.0
 )
 
-require github.com/pkg/errors v0.9.1 // indirect
+require (
+	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect

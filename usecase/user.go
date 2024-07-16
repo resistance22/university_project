@@ -4,6 +4,7 @@ import (
 	"context"
 
 	entity "github.com/resistance22/university_project/Entity"
+	validator "github.com/resistance22/university_project/Validator"
 )
 
 type UserRepository interface {
@@ -20,10 +21,21 @@ func NewUserUseCase(repo UserRepository) *UserUseCase {
 	}
 }
 
-func (useCase *UserUseCase) Register(ctx context.Context, user *entity.User) (*entity.User, error) {
-	err := useCase.repository.Register(ctx, user)
+func (useCase *UserUseCase) Register(ctx context.Context, user *validator.RegisterBody) (*entity.User, error) {
+	u, e := entity.NewUser(
+		user.FirstName,
+		user.LastName,
+		user.UserName,
+		user.Password,
+	)
+
+	if e != nil {
+		return nil, e
+	}
+
+	err := useCase.repository.Register(ctx, u)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return u, nil
 }

@@ -4,7 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	repository "github.com/resistance22/university_project/Repository"
+	"github.com/resistance22/university_project/controller"
 	db "github.com/resistance22/university_project/db/sqlc"
+	"github.com/resistance22/university_project/usecase"
 )
 
 type Server struct {
@@ -20,6 +23,17 @@ func NewServer(store *db.Store) *Server {
 			"result": "pong",
 		})
 	})
+
+	v1 := router.Group("/api/v1")
+	{
+		auth := v1.Group("auth")
+		{
+			repository := repository.NewUserRepository(store)
+			userUseCase := usecase.NewUserUseCase(repository)
+			controller := controller.NewUserController(userUseCase)
+			auth.POST("/register", controller.Register)
+		}
+	}
 
 	server := &Server{
 		store:  store,
