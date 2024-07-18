@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    image: docker.arvancloud.ir/postgres
+    container_name: test_project_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "2345:5432"
+    networks:
+      - postgres
+    restart: no
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      retries: 5
+
+networks:
+  postgres:
+    driver: bridge

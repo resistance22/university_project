@@ -101,3 +101,64 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (AppUser
 	)
 	return i, err
 }
+
+const getAllConsumable = `-- name: GetAllConsumable :many
+SELECT id, "createdAt", title, uom, remaining FROM consumable
+`
+
+func (q *Queries) GetAllConsumable(ctx context.Context) ([]Consumable, error) {
+	rows, err := q.db.Query(ctx, getAllConsumable)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Consumable
+	for rows.Next() {
+		var i Consumable
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Title,
+			&i.Uom,
+			&i.Remaining,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllUsers = `-- name: GetAllUsers :many
+SELECT id, created_at, first_name, last_name, user_name, password FROM app_user
+`
+
+func (q *Queries) GetAllUsers(ctx context.Context) ([]AppUser, error) {
+	rows, err := q.db.Query(ctx, getAllUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []AppUser
+	for rows.Next() {
+		var i AppUser
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.FirstName,
+			&i.LastName,
+			&i.UserName,
+			&i.Password,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

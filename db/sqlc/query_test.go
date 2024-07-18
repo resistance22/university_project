@@ -42,6 +42,11 @@ func TestCreateConsumable(t *testing.T) {
 	require.Equal(t, product.CreatedAt.Time.Minute(), arg.CreatedAt.Time.Minute())
 	require.Equal(t, product.CreatedAt.Time.Second(), arg.CreatedAt.Time.Second())
 	require.NotZero(t, product.ID)
+
+	consumables, err := testQueries.GetAllConsumable(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, consumables, 1)
 }
 
 func TestCreateUser(t *testing.T) {
@@ -72,4 +77,10 @@ func TestCreateUser(t *testing.T) {
 	require.Equal(t, user.LastName, arg.LastName)
 	require.Equal(t, user.UserName, arg.UserName)
 	require.Equal(t, user.Password, arg.Password)
+
+	users, err := testQueries.GetAllUsers(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, users, 1)
+
 }

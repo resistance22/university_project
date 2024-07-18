@@ -13,13 +13,13 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
+
+	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
 	dbContext := context.Background()
-	conn, err := pgx.Connect(dbContext, "postgresql://postgres:postgres@localhost:5432/project_database?sslmode=disable")
+	conn, err := pgx.Connect(dbContext, os.Getenv("DB_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

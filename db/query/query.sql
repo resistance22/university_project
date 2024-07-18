@@ -13,6 +13,9 @@ INSERT INTO consumable (
   $5
 ) RETURNING *;
 
+-- name: GetAllConsumable :many
+SELECT * FROM consumable;
+
 -- name: CreateUser :one
 INSERT INTO app_user (
   id,
@@ -29,3 +32,6 @@ INSERT INTO app_user (
   $5,
   $6
 ) RETURNING *;
+
+-- name: GetAllUsers :many
+SELECT * FROM app_user;
