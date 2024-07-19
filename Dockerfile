@@ -16,7 +16,7 @@ WORKDIR /app
 
 RUN apk add libc6-compat
 
-COPY dev.env /
+COPY environments /dev.env
 
 COPY --from=builder /app/out . 
 
