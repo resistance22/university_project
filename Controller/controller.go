@@ -1,6 +1,6 @@
 package controller
 
-func NewUserController(usecase UserUseCase) *userController {
+func NewUserController(usecase IUserUseCase) *userController {
 	return &userController{
 		UseCases: usecase,
 	}

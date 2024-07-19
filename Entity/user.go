@@ -1,10 +1,15 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/resistance22/university_project/utils"
+	utils "github.com/resistance22/university_project/Utils"
+)
+
+var (
+	ErrPasswordHashFailed = errors.New("password hash failed")
 )
 
 type User struct {
@@ -25,7 +30,7 @@ func NewUser(
 	hashedPassword, err := utils.HashString(Password)
 
 	if err != nil {
-		return nil, err
+		return nil, ErrPasswordHashFailed
 	}
 
 	return &User{

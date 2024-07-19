@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/resistance22/university_project/utils"
+	utils "github.com/resistance22/university_project/Utils"
 )
 
 func translateToHttpError(err any) *utils.HttpError {

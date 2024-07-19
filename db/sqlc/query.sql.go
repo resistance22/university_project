@@ -73,12 +73,12 @@ INSERT INTO app_user (
 `
 
 type CreateUserParams struct {
-	ID        pgtype.UUID `json:"id"`
-	CreatedAt pgtype.Date `json:"created_at"`
-	FirstName pgtype.Text `json:"first_name"`
-	LastName  pgtype.Text `json:"last_name"`
-	UserName  pgtype.Text `json:"user_name"`
-	Password  pgtype.Text `json:"password"`
+	ID        pgtype.UUID      `json:"id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	FirstName pgtype.Text      `json:"first_name"`
+	LastName  pgtype.Text      `json:"last_name"`
+	UserName  pgtype.Text      `json:"user_name"`
+	Password  pgtype.Text      `json:"password"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (AppUser, error) {
@@ -161,4 +161,23 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]AppUser, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getUserByUserName = `-- name: GetUserByUserName :one
+
+SELECT id, created_at, first_name, last_name, user_name, password FROM app_user WHERE user_name = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByUserName(ctx context.Context, userName pgtype.Text) (AppUser, error) {
+	row := q.db.QueryRow(ctx, getUserByUserName, userName)
+	var i AppUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.FirstName,
+		&i.LastName,
+		&i.UserName,
+		&i.Password,
+	)
+	return i, err
 }

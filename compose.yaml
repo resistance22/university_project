@@ -13,9 +13,9 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - dev_project
     restart: unless-stopped
 
 networks:
-  postgres:
+  dev_project:
     driver: bridge

@@ -1,5 +1,5 @@
 postgres:
-	docker compose up -d
+	docker compose -f ./compose.yaml up -d
 createdb:
 	docker exec -it project_db createdb --username=postgres --owner=postgres project_database
 dropdb:

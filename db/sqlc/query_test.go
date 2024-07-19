@@ -37,10 +37,7 @@ func TestCreateConsumable(t *testing.T) {
 	require.Equal(t, product.Title, arg.Title)
 	require.Equal(t, product.Uom, arg.Uom)
 	require.Equal(t, product.Remaining, arg.Remaining)
-	require.Equal(t, product.CreatedAt.Time.Year(), arg.CreatedAt.Time.Year())
-	require.Equal(t, product.CreatedAt.Time.Month(), arg.CreatedAt.Time.Month())
-	require.Equal(t, product.CreatedAt.Time.Minute(), arg.CreatedAt.Time.Minute())
-	require.Equal(t, product.CreatedAt.Time.Second(), arg.CreatedAt.Time.Second())
+	require.WithinDuration(t, product.CreatedAt.Time, arg.CreatedAt.Time, time.Second)
 	require.NotZero(t, product.ID)
 
 	consumables, err := testQueries.GetAllConsumable(context.Background())
@@ -62,7 +59,7 @@ func TestCreateUser(t *testing.T) {
 
 	arg := CreateUserParams{
 		ID:        uuid,
-		CreatedAt: pgtype.Date(createdAt),
+		CreatedAt: createdAt,
 		FirstName: pgtype.Text{String: "Amin", Valid: true},
 		LastName:  pgtype.Text{String: "Foroutan", Valid: true},
 		UserName:  pgtype.Text{String: "amin_foroutan", Valid: true},
@@ -83,4 +80,38 @@ func TestCreateUser(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, users, 1)
 
+}
+
+func TestGetUserByUserName(t *testing.T) {
+	createdAt := pgtype.Timestamp{
+		Time:  time.Now().UTC(),
+		Valid: true,
+	}
+
+	uuid := pgtype.UUID{
+		Bytes: uuid.New(),
+		Valid: true,
+	}
+
+	arg := CreateUserParams{
+		ID:        uuid,
+		CreatedAt: createdAt,
+		FirstName: pgtype.Text{String: "Amin", Valid: true},
+		LastName:  pgtype.Text{String: "Foroutan", Valid: true},
+		UserName:  pgtype.Text{String: "amin_f", Valid: true},
+		Password:  pgtype.Text{String: "COMPLEX_PASSWORD", Valid: true},
+	}
+
+	_, err := testQueries.CreateUser(context.Background(), arg)
+	require.NoError(t, err)
+
+	user, err := testQueries.GetUserByUserName(context.Background(), arg.UserName)
+
+	require.NoError(t, err)
+	require.Equal(t, arg.ID.Bytes, user.ID.Bytes)
+	require.WithinDuration(t, arg.CreatedAt.Time, arg.CreatedAt.Time, time.Millisecond)
+	require.Equal(t, arg.FirstName, user.FirstName)
+	require.Equal(t, arg.LastName, user.LastName)
+	require.Equal(t, arg.UserName, user.UserName)
+	require.Equal(t, arg.Password, user.Password)
 }

@@ -9,12 +9,12 @@ import (
 )
 
 type AppUser struct {
-	ID        pgtype.UUID `json:"id"`
-	CreatedAt pgtype.Date `json:"created_at"`
-	FirstName pgtype.Text `json:"first_name"`
-	LastName  pgtype.Text `json:"last_name"`
-	UserName  pgtype.Text `json:"user_name"`
-	Password  pgtype.Text `json:"password"`
+	ID        pgtype.UUID      `json:"id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	FirstName pgtype.Text      `json:"first_name"`
+	LastName  pgtype.Text      `json:"last_name"`
+	UserName  pgtype.Text      `json:"user_name"`
+	Password  pgtype.Text      `json:"password"`
 }
 
 type Consumable struct {

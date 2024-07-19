@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"context"
@@ -8,12 +8,13 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	config "github.com/resistance22/university_project/Config"
+	db "github.com/resistance22/university_project/db/sqlc"
 )
 
-var testQueries *Queries
+var UserRepo *UserRepository
 
 func TestMain(m *testing.M) {
-	config, err := config.LoadConfig("../..", "test")
+	config, err := config.LoadConfig("..", "test")
 
 	if err != nil {
 		log.Fatal(err.Error())
@@ -24,7 +25,10 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("Connection To DB Failed!")
 	}
-	testQueries = New(conn)
+	store := db.NewPGXStore(conn)
+	UserRepo = &UserRepository{
+		store: store,
+	}
 	code := m.Run()
 	os.Exit(code)
 }

@@ -6,16 +6,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	entity "github.com/resistance22/university_project/Entity"
+	utils "github.com/resistance22/university_project/Utils"
 	validator "github.com/resistance22/university_project/Validator"
-	"github.com/resistance22/university_project/utils"
 )
 
-type UserUseCase interface {
+type IUserUseCase interface {
 	Register(ctx context.Context, user *validator.RegisterBody) (*entity.User, error)
+	Login(ctx context.Context, user *validator.LoginBody) (string, error)
 }
 
 type userController struct {
-	UseCases UserUseCase
+	UseCases IUserUseCase
 }
 
 func (controller *userController) Register(c *gin.Context) {

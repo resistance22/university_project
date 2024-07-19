@@ -1,13 +1,16 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	config "github.com/resistance22/university_project/Config"
+	controller "github.com/resistance22/university_project/Controller"
 	repository "github.com/resistance22/university_project/Repository"
-	"github.com/resistance22/university_project/controller"
+	token "github.com/resistance22/university_project/Token"
+	usecase "github.com/resistance22/university_project/UseCase"
 	db "github.com/resistance22/university_project/db/sqlc"
-	"github.com/resistance22/university_project/usecase"
 )
 
 type Server struct {
@@ -15,7 +18,7 @@ type Server struct {
 	router *gin.Engine
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(config *config.Config, store *db.Store) *Server {
 	router := gin.Default()
 
 	router.GET("/ping", func(c *gin.Context) {
@@ -28,8 +31,12 @@ func NewServer(store *db.Store) *Server {
 	{
 		auth := v1.Group("auth")
 		{
+			tokenMaker, err := token.NewPasteoTokenMaker([]byte(config.TokenKey))
+			if err != nil {
+				log.Fatal(err.Error())
+			}
 			repository := repository.NewUserRepository(store)
-			userUseCase := usecase.NewUserUseCase(repository)
+			userUseCase := usecase.NewUserUseCase(repository, tokenMaker)
 			controller := controller.NewUserController(userUseCase)
 			auth.POST("/register", controller.Register)
 		}

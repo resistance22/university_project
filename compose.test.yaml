@@ -11,7 +11,7 @@ services:
     ports:
       - "2345:5432"
     networks:
-      - postgres
+      - test_project
     restart: no
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
@@ -19,5 +19,5 @@ services:
       retries: 5
 
 networks:
-  postgres:
+  test_project:
     driver: bridge

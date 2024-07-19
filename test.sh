@@ -1,21 +1,23 @@
 #!/bin/bash
 
-export $(grep -v "^#" .env.test | xargs -d '\n')
+export $(grep -v "^#" test.env | xargs -d '\n')
 
-docker compose -f compose.test.yaml up -d
+COMPOSE_FILE="compose.test.yaml"
+
+docker compose -f $COMPOSE_FILE up -d
 
 echo "Waiting for database to be healthy..."
-docker compose exec db bash -c 'until pg_isready -U testuser; do sleep 1; done'
+docker compose -f $COMPOSE_FILE exec db bash -c 'until pg_isready -U testuser; do sleep 1; done'
 
-docker compose exec -it db psql -U postgres -c "create database project_database"
+docker compose -f $COMPOSE_FILE exec -it db psql -U postgres -c "create database project_database"
 
 make migrattestup
 
 echo "Running tests..."
-go test --cover -v ./...
+go test --cover -v ./... --coverprofile=coverage.out -covermode=count
 
 test_result=$?
 
-docker compose down
+docker compose -f $COMPOSE_FILE down
 
 exit $test_result

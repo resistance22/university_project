@@ -35,3 +35,7 @@ INSERT INTO app_user (
 
 -- name: GetAllUsers :many
 SELECT * FROM app_user;
+
+-- name: GetUserByUserName :one
+
+SELECT * FROM app_user WHERE user_name = $1 LIMIT 1;
