@@ -1,11 +1,9 @@
-version: "3.9"
-
 services:
   db:
     image: docker.arvancloud.ir/postgres
     container_name: project_db
     volumes:
-      - ./_data/db:/var/lib/postgresql/data
+      - university_project_postgres_v:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -19,3 +17,6 @@ services:
 networks:
   dev_project:
     driver: bridge
+volumes:
+  university_project_postgres_v:
+    external: true

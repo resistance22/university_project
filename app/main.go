@@ -13,8 +13,7 @@ import (
 )
 
 func main() {
-
-	config, err := config.LoadConfig(".", "dev")
+	config, err := config.LoadConfig("..", "dev")
 
 	if err != nil {
 		log.Fatal(err.Error())

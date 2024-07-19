@@ -10,9 +10,9 @@ echo $DB_URL
 docker compose -f $COMPOSE_FILE up -d
 
 echo "Waiting for database to be healthy..."
-docker compose -f $COMPOSE_FILE exec db bash -c 'until pg_isready -U test_user; do sleep 1; done'
-
-docker compose -f $COMPOSE_FILE exec -it db psql -U test_user -c "create database test_db"
+docker compose -f $COMPOSE_FILE exec test_db bash -c 'until pg_isready -U test_user; do sleep 1; done'
+# 
+docker compose -f $COMPOSE_FILE exec test_db psql -U test_user -c "create database if not exists test_db"
 
 make migrattestup
 

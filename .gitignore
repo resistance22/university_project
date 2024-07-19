@@ -1,4 +1,4 @@
-_data
 .vscode
 .env
 .env.test
+*.env
