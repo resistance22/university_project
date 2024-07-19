@@ -1,4 +1,4 @@
-FROM docker.arvancloud.ir/golang:latest
+FROM docker.arvancloud.ir/golang:latest as builder
 
 WORKDIR /app
 
@@ -10,7 +10,17 @@ COPY app ./
 
 RUN go build -o out
 
+FROM docker.arvancloud.ir/alpine:latest as runner 
+
+WORKDIR /app
+
+RUN apk add libc6-compat
+
+COPY dev.env /
+
+COPY --from=builder /app/out . 
+
 EXPOSE 8080
 
-CMD ["/out"]
+CMD ["./out"]
 

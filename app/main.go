@@ -22,7 +22,7 @@ func main() {
 	dbContext := context.Background()
 	conn, err := pgx.Connect(dbContext, config.DBUrl)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		log.Fatal("Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 	// defer conn.Close(dbContext)
