@@ -39,6 +39,7 @@ func NewServer(config *config.Config, store *db.Store) *Server {
 			userUseCase := usecase.NewUserUseCase(repository, tokenMaker)
 			controller := controller.NewUserController(userUseCase)
 			auth.POST("/register", controller.Register)
+			auth.POST("/login", controller.Login)
 		}
 	}
 

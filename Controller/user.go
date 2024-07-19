@@ -52,3 +52,32 @@ func (controller *userController) Register(c *gin.Context) {
 	c.JSON(httpResponse.Status, jsonResponse)
 
 }
+
+func (controller *userController) Login(c *gin.Context) {
+	var body validator.LoginBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		httpError := utils.NewHttpError(err.Error(), http.StatusBadRequest, "Invalid Body")
+		response := utils.MakeError(httpError)
+		c.JSON(httpError.Status, response)
+		return
+	}
+
+	token, err := controller.UseCases.Login(c, &body)
+
+	if err != nil {
+		httpError := utils.NewHttpError(err.Error(), http.StatusUnauthorized, "You Are Not Authorized")
+		response := utils.MakeError(httpError)
+		c.JSON(httpError.Status, response)
+		return
+	}
+
+	httpResponse := utils.NewHttpResponse(gin.H{"access_token": token}, http.StatusOK)
+	jsonResponse := utils.MakeResponse(httpResponse, "Success")
+	c.JSON(httpResponse.Status, jsonResponse)
+}
+
+func NewUserController(usecase IUserUseCase) *userController {
+	return &userController{
+		UseCases: usecase,
+	}
+}
