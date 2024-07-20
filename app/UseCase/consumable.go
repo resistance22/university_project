@@ -16,7 +16,7 @@ type ConsumableUseCase struct {
 	repo repository.IConsumableRepository
 }
 
-func NewConsumableRepository(repo repository.IConsumableRepository) IConsumableUseCase {
+func NewConsumableUseCase(repo repository.IConsumableRepository) IConsumableUseCase {
 	return &ConsumableUseCase{
 		repo: repo,
 	}
