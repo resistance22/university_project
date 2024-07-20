@@ -1,22 +1,16 @@
 package controller
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	entity "github.com/resistance22/university_project/Entity"
+	usecase "github.com/resistance22/university_project/UseCase"
 	utils "github.com/resistance22/university_project/Utils"
 	validator "github.com/resistance22/university_project/Validator"
 )
 
-type IUserUseCase interface {
-	Register(ctx context.Context, user *validator.RegisterBody) (*entity.User, error)
-	Login(ctx context.Context, user *validator.LoginBody) (string, error)
-}
-
 type userController struct {
-	UseCases IUserUseCase
+	UseCases usecase.IUserUseCase
 }
 
 func (controller *userController) Register(c *gin.Context) {
@@ -76,7 +70,7 @@ func (controller *userController) Login(c *gin.Context) {
 	c.JSON(httpResponse.Status, jsonResponse)
 }
 
-func NewUserController(usecase IUserUseCase) *userController {
+func NewUserController(usecase usecase.IUserUseCase) *userController {
 	return &userController{
 		UseCases: usecase,
 	}
