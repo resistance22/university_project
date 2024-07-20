@@ -4,31 +4,29 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	config "github.com/resistance22/university_project/Config"
 	"github.com/resistance22/university_project/api"
 	db "github.com/resistance22/university_project/db/sqlc"
 )
 
 func main() {
-	config, err := config.LoadConfig("..", "dev")
+	envConfig, err := config.LoadConfig("..", "dev")
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	dbContext := context.Background()
-	conn, err := pgx.Connect(dbContext, config.DBUrl)
+	connPool, err := pgxpool.NewWithConfig(context.Background(), config.DBConfig(envConfig.DBUrl))
+
 	if err != nil {
-		log.Fatal("Unable to connect to database: %s\n", err.Error())
-		os.Exit(1)
+		log.Fatal("Error while creating connection to the database!!")
 	}
-	// defer conn.Close(dbContext)
-	store := db.NewPGXStore(conn)
-	server := api.NewServer(&config, store)
-	if err := server.Start(fmt.Sprintf("%s:%d", config.ServerAddress, config.ServerPort)); err != nil {
+
+	store := db.NewPGXStore(connPool)
+	server := api.NewServer(&envConfig, store)
+	if err := server.Start(fmt.Sprintf("%s:%d", envConfig.ServerAddress, envConfig.ServerPort)); err != nil {
 		log.Fatal(err)
 	}
 }
