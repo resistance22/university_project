@@ -9,12 +9,12 @@ import (
 	validator "github.com/resistance22/university_project/Validator"
 )
 
-type userController struct {
-	UseCases usecase.IUserUseCase
+type consumableController struct {
+	UseCases usecase.IConsumableUseCase
 }
 
-func (controller *userController) Register(c *gin.Context) {
-	var body validator.RegisterBody
+func (controller *consumableController) Create(c *gin.Context) {
+	var body validator.CreateConsumableBody
 	if err := c.ShouldBindJSON(&body); err != nil {
 		httpError := utils.NewHttpError(err.Error(), http.StatusBadRequest, "Invalid Body")
 		response := utils.MakeError(httpError)
@@ -22,7 +22,7 @@ func (controller *userController) Register(c *gin.Context) {
 		return
 	}
 
-	res, err := controller.UseCases.Register(c, &body)
+	res, err := controller.UseCases.Create(c, &body)
 
 	if err != nil {
 		httpError := utils.NewHttpError(err.Error(), http.StatusBadRequest, "Something Went Wrong!")
@@ -39,39 +39,14 @@ func (controller *userController) Register(c *gin.Context) {
 		c.JSON(httpError.Status, response)
 		return
 	}
-	delete(response, "password")
 
 	httpResponse := utils.NewHttpResponse(response, http.StatusCreated)
 	jsonResponse := utils.MakeResponse(httpResponse, "New User Created")
 	c.JSON(httpResponse.Status, jsonResponse)
-
 }
 
-func (controller *userController) Login(c *gin.Context) {
-	var body validator.LoginBody
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httpError := utils.NewHttpError(err.Error(), http.StatusBadRequest, "Invalid Body")
-		response := utils.MakeError(httpError)
-		c.JSON(httpError.Status, response)
-		return
-	}
-
-	token, err := controller.UseCases.Login(c, &body)
-
-	if err != nil {
-		httpError := utils.NewHttpError(err.Error(), http.StatusUnauthorized, "You Are Not Authorized")
-		response := utils.MakeError(httpError)
-		c.JSON(httpError.Status, response)
-		return
-	}
-
-	httpResponse := utils.NewHttpResponse(gin.H{"access_token": token}, http.StatusOK)
-	jsonResponse := utils.MakeResponse(httpResponse, "Success")
-	c.JSON(httpResponse.Status, jsonResponse)
-}
-
-func NewUserController(usecase usecase.IUserUseCase) *userController {
-	return &userController{
+func NewConsumableController(usecase usecase.IConsumableUseCase) *consumableController {
+	return &consumableController{
 		UseCases: usecase,
 	}
 }

@@ -4,19 +4,23 @@ import (
 	"context"
 	"time"
 
-	controller "github.com/resistance22/university_project/Controller"
 	entity "github.com/resistance22/university_project/Entity"
 	repository "github.com/resistance22/university_project/Repository"
 	token "github.com/resistance22/university_project/Token"
 	validator "github.com/resistance22/university_project/Validator"
 )
 
+type IUserUseCase interface {
+	Register(ctx context.Context, user *validator.RegisterBody) (*entity.User, error)
+	Login(ctx context.Context, user *validator.LoginBody) (string, error)
+}
+
 type UserUseCase struct {
 	repository repository.IUserRepository
 	tokenMaker token.TokenMaker
 }
 
-func NewUserUseCase(repo repository.IUserRepository, tokenMaker token.TokenMaker) controller.IUserUseCase {
+func NewUserUseCase(repo repository.IUserRepository, tokenMaker token.TokenMaker) IUserUseCase {
 	return &UserUseCase{
 		repo,
 		tokenMaker,
